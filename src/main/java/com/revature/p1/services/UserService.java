@@ -136,7 +136,11 @@ public class UserService {
         return userRepo.findById(userIdParam);
     }
 
+    public void updateCurrentUser(HttpSession session){
+        AppUser currentUser = (AppUser) session.getAttribute("AppUser");
+        AppUser a = userRepo.findById(currentUser.getId());
 
+    }
     /**
      * Removes a batchID to a user's Batch Registrations
      *

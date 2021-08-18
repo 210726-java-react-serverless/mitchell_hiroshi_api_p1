@@ -30,7 +30,6 @@ public class MongoClientFactory {
     private MongoClientFactory() {
 
 
-
         try {
             String ipAddress = System.getProperty("ipAddress");
             int port = Integer.parseInt(System.getProperty("port"));

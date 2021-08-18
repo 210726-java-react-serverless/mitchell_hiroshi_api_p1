@@ -41,7 +41,7 @@ public class UserServlet extends HttpServlet {
         // Get the session from the request, if it exists (do not create one)
         HttpSession session = req.getSession(false);
 
-        // If the session is not null, then grab the auth-user attribute from it
+        // If the session is not null, then grab the Principal attribute from it
         Principal requestingUser = (session == null) ? null : (Principal) session.getAttribute("Principal");
 
         // Check to see if there was a valid auth-user attribute
@@ -90,7 +90,7 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        System.out.println(req.getAttribute("filtered"));
+        //System.out.println(req.getAttribute("filtered"));
         PrintWriter respWriter = resp.getWriter();
         resp.setContentType("application/json");
 
@@ -126,6 +126,37 @@ public class UserServlet extends HttpServlet {
             e.printStackTrace();
             resp.setStatus(500); // server's fault
         }
+
+    }
+    //@Override
+    protected void doPatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+        PrintWriter respWriter = resp.getWriter();
+        resp.setContentType("application/json");
+
+        // Get the session from the request, if it exists (do not create one)
+        HttpSession session = req.getSession(false);
+
+        // If the session is not null, then grab the AppUser attribute from it
+        AppUser requestingUser = (session == null) ? null : (AppUser) session.getAttribute("AppUser");
+
+        //If requesting user is null, return an error response to user
+        if (requestingUser == null) {
+            String msg = "No session found, please login.";
+            logger.info(msg);
+            resp.setStatus(401);
+            ErrorResponse errResp = new ErrorResponse(401, msg);
+            respWriter.write(mapper.writeValueAsString(errResp));
+            return;
+        }
+
+        //View requesting user's fields
+        AppUserDTO dto = new AppUserDTO(requestingUser);
+        String payload = mapper.writeValueAsString(dto);
+        respWriter.write(payload);
+        resp.setStatus(201);
+
+        //Change AppUser fields
+
 
 
     }
